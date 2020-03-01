@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="stream_consumer_2" />
+        <module name="stream_consumer" />
+        <module name="stream_producer" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api_gateway_server" target="1.8" />
+      <module name="api_zuul_server" target="1.8" />
+      <module name="eureka_server" target="1.8" />
+      <module name="order_service" target="1.8" />
+      <module name="product_service" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api_gateway_server" options="-parameters" />
+      <module name="api_zuul_server" options="-parameters" />
+      <module name="eureka_server" options="-parameters" />
+      <module name="order_service" options="-parameters" />
+      <module name="product_service" options="-parameters" />
+      <module name="stream_consumer" options="-parameters" />
+      <module name="stream_consumer_2" options="-parameters" />
+      <module name="stream_producer" options="-parameters" />
+    </option>
+  </component>
+</project>

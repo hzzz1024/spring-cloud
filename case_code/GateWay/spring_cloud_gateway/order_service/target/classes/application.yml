@@ -1,0 +1,40 @@
+server:
+  port: 9002 #端口
+spring:
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true # 开启Spring Cloud的重试功能
+  application:
+    name: service-order #服务名称
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.126.99:3306/spring_cloud_demo?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+  jpa:
+    database: MySQL
+    show-sql: true
+    open-in-view: true
+
+#配置Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9000/eureka/,http://localhost:8000/eureka/ #多个eurekaserver之间用,隔开
+  instance:
+    prefer-ip-address: true #使用ip地址注册
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} #向注册中心中注册服务id
+    lease-renewal-interval-in-seconds: 5 #想注册中心发送心跳的续约间隔时间5s
+    lease-expiration-duration-in-seconds: 10 #eureka client发送心跳给server端后，续约到期时间（默认90秒）
+
+#配置feign日志的输出
+#日志级别  NONE : 不输出日志(高)   BASIC: 适用于生产环境追踪问题    HEADERS : 在BASIC的基础上,记录请求和响应头信息   FULL : 记录所有
+feign:
+  client:
+    config:
+      service-product:  #需要调用的服务名称，这里查询商品服务的日志情况
+        loggerLevel: FULL   #日志级别
+logging:
+  level:
+    cn.hzp.order.feign.ProductFeignClient: debug #只查看商品服务接口的调用日志

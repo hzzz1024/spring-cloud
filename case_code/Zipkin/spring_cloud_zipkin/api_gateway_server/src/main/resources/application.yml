@@ -1,0 +1,63 @@
+#网关限流测试
+server:
+  port: 8080 #端口
+spring:
+  application:
+    name: api-gateway-server #服务名称
+  #  redis:
+  #    host: 192.168.126.99
+  #    pool: 6379
+  #    database: 0
+  cloud: #配置SpringCloudGateway的路由
+    gateway:
+      routes:
+        - id: order-service
+          #uri: http://127.0.0.1:9001
+          uri: lb://service-order #lb:// 表示去注册中心中获取服务名对应的地址
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+
+  #  #zipkin采集数据
+  #  zipkin:
+  #    base-url: http://192.168.126.99:9411/  #server的请求地址
+  #    sender:
+  #      type: web #数据的传输方式 , 已http的形式向server端发送数据
+  #  sleuth:
+  #    sampler:
+  #      probability: 1 #采样比
+
+  #修改zipkin使用rabbitmq采集数据
+  zipkin:
+    sender:
+      type: rabbit #向rabbitmq中发送消息
+  sleuth:
+    sampler:
+      probability: 1 #采样比
+  rabbitmq:
+    host: 192.168.126.99
+    port: 5672
+    username: guest
+    password: guest
+    listener: # 这里配置了重试策略
+      direct:
+        retry:
+          enabled: true
+      simple:
+        retry:
+          enabled: true
+
+#eureka注册中心
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9000/eureka/
+  instance:
+    prefer-ip-address: true #使用ip地址注册
+#sleuth 日志
+logging:
+  level:
+    root: info
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.cloud.sleuth: DEBUG

@@ -1,0 +1,23 @@
+server:
+  port: 9001 #端口
+spring:
+  application:
+    name: service-product #服务名称
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.126.99:3306/spring_cloud_demo?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+  jpa:
+    database: MySQL
+    show-sql: true
+    open-in-view: true
+
+#配置文件环境
+profile-name: application-pro
+apollo:
+  bootstrap:  #开启apollo
+    enabled: true
+  meta: http://192.168.126.99:8080 #apollo 中提供的Eureka
+app:
+  id: product_service #指定apollo配置中心中的appid

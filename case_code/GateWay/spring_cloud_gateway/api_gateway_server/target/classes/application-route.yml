@@ -1,0 +1,38 @@
+#网关路由测试配置
+server:
+  port: 8080 #端口
+spring:
+  application:
+    name: api-gateway-server #服务名称
+  cloud: #配置SpringCloudGateway的路由
+    gateway:
+      routes:
+      - id: product-service
+        #uri: http://127.0.0.1:9001
+        uri: lb://service-product #lb:// 表示去注册中心中获取服务名对应的地址
+        predicates:
+          #- Path=/product/**
+          #想要到达url中显示服务标识/product-service 的改造
+        - Path=/product-service/**
+          #如果不使用filters-RewritePath，请求http://localhost:8080/product-service/product/1则网关会转发到 http://127.0.0.1:9001/product-service/product/1,真实环境不存此路径。
+        filters: #配置路径重写过滤器 让 http://localhost:8080/product-service/product/1 转发到 http://127.0.0.1:9001/product/1
+        - RewritePath=/product-service/(?<segment>.*), /$\{segment} #正则表达 后面替换前面内容，注意在yml $需要写成$\ 转义
+      #默认根据服务名称进行转发（不需要配置重写过滤器）
+      #如：访问http://localhost:8080/product-service 会转发到 http://127.0.0.1:9001/product/1
+      discovery:
+        locator:
+          enabled: true # 开启根据服务名称自动转发
+          lower-case-service-id: true #注册中心服务名称以小写形式呈现
+
+#eureka注册中心
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9000/eureka/
+  instance:
+    prefer-ip-address: true #使用ip地址注册
+logging:
+  level:
+    root: info
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.cloud.sleuth: DEBUG

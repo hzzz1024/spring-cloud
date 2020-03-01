@@ -1,0 +1,33 @@
+server:
+  port: 11000 #服务端口
+spring:
+  application:
+    name: config-server #指定服务名
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/hzp1024/config-repository.git  #保存配置信息的git位置
+  rabbitmq:
+    host: 192.168.126.99
+    port: 5672
+    username: guest
+    password: guest
+management: #消息总线  手动刷新配置
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh #自定义值，浏览器访问时使用的参数
+#配置Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:9000/eureka/ #多个eurekaserver之间用,隔开
+  instance:
+    prefer-ip-address: true #使用ip地址注册
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} #向注册中心中注册服务id
+---
+spring:
+  profiles: config2
+server:
+  port: 11001 #服务端口
